@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 const Header: React.FC = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [user, setUser] = useState<{ firstName: string; name: string } | null>(
-    null
+    null,
   );
 
   const navigate = useNavigate();
@@ -42,9 +42,9 @@ const Header: React.FC = () => {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <img
-                  className="h-8 w-8"
+                  className="size-8"
                   src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
                   alt="Your Company"
                 />
@@ -64,13 +64,19 @@ const Header: React.FC = () => {
                   >
                     Produits
                   </Link>
+                  <Link
+                    to="/users"
+                    className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                  >
+                    Utilisateurs
+                  </Link>
                 </div>
               </div>
             </div>
             <div className="hidden md:block">
               <div className="ml-4 flex items-center md:ml-6">
                 {user ? (
-                  <span className="text-white mr-4">
+                  <span className="mr-4 text-white">
                     Bonjour, {user.firstName} {user.name}
                   </span>
                 ) : (
@@ -88,7 +94,7 @@ const Header: React.FC = () => {
                 >
                   <span className="sr-only">Voir les notifications</span>
                   <svg
-                    className="h-6 w-6"
+                    className="size-6"
                     fill="none"
                     viewBox="0 0 24 24"
                     strokeWidth="1.5"
@@ -115,7 +121,7 @@ const Header: React.FC = () => {
                     >
                       <span className="sr-only">Open user menu</span>
                       <img
-                        className="h-8 w-8 rounded-full"
+                        className="size-8 rounded-full"
                         src="https://media.istockphoto.com/id/1291582566/fr/vectoriel/logo-de-conception-de-vecteur-de-pain-et-de-g%C3%A2teaux-de-boulangerie.jpg?s=612x612&w=0&k=20&c=ioVVAeLhtUVjUJhneJjUx8PQf6wrrEH4TYH-wU0OzNk=&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                         alt="Profil utilisateur"
                       />
@@ -133,7 +139,7 @@ const Header: React.FC = () => {
                       {user ? (
                         <button
                           onClick={handleLogout}
-                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
                         >
                           Déconnexion
                         </button>
@@ -172,7 +178,7 @@ const Header: React.FC = () => {
           >
             <span className="sr-only">Open main menu</span>
             <svg
-              className="block h-6 w-6"
+              className="block size-6"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth="1.5"
@@ -186,7 +192,7 @@ const Header: React.FC = () => {
               />
             </svg>
             <svg
-              className="hidden h-6 w-6"
+              className="hidden size-6"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth="1.5"
