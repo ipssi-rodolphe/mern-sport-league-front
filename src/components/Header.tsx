@@ -46,7 +46,7 @@ const Header: React.FC = () => {
               <div className="shrink-0">
                 <img
                   className="size-8"
-                  src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
+                  src="./images/product/logo1.png"
                   alt="Your Company"
                 />
               </div>
@@ -139,7 +139,7 @@ const Header: React.FC = () => {
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="size-8 rounded-full"
-                        src="https://media.istockphoto.com/id/1291582566/fr/vectoriel/logo-de-conception-de-vecteur-de-pain-et-de-g%C3%A2teaux-de-boulangerie.jpg?s=612x612&w=0&k=20&c=ioVVAeLhtUVjUJhneJjUx8PQf6wrrEH4TYH-wU0OzNk=&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        src="./images/product/logo1.png"
                         alt="Profil utilisateur"
                       />
                     </button>

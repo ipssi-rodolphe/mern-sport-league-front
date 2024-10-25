@@ -14,10 +14,17 @@ const LoginPage: React.FC = () => {
             Utilisez les identifiants suivants pour une connexion de démonstration :
           </p>
           <div className="mt-3">
-            <p className="font-medium text-gray-800">Email (admin) :</p>
+            <p className="font-medium text-gray-800">Email (demo admin) :</p>
             <p className="text-sm text-gray-700 mb-2">frederic.zai@gmail.com</p>
             <p className="font-medium text-gray-800">Mot de passe :</p>
             <p className="text-sm text-gray-700">test123</p>
+          </div>
+          
+          <div className="mt-3">
+            <p className="font-medium text-gray-800">Email (demo user) :</p>
+            <p className="text-sm text-gray-700 mb-2">jean.dupont1@example.com</p>
+            <p className="font-medium text-gray-800">Mot de passe :</p>
+            <p className="text-sm text-gray-700">Password123!</p>
           </div>
           <p className="text-sm text-red-700 mt-2">
           ⚠️ Please reload the page when you're loggedIn !!⚠️
