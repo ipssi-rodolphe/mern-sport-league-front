@@ -3,9 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Header: React.FC = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [user, setUser] = useState<{ firstName: string; name: string } | null>(
-    null,
-  );
+  const [user, setUser] = useState<{ firstName: string; name: string; role: string } | null>(null);
 
   const navigate = useNavigate();
 
@@ -61,24 +59,34 @@ const Header: React.FC = () => {
                   >
                     Accueil
                   </Link>
-                  <Link
-                    to="/products"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                  >
-                    Produits
-                  </Link>
-                  <Link
-                    to="/users"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                  >
-                    Utilisateurs
-                  </Link>
-                  <Link
-                    to="/rental"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                  >
-                    Locations
-                  </Link>
+                  {user && user.role !== "user" && (
+                    <>
+                      <Link
+                        to="/products"
+                        className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                      >
+                        Produits
+                      </Link>
+                      <Link
+                        to="/users"
+                        className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                      >
+                        Utilisateurs
+                      </Link>
+                      <Link
+                        to="/rental"
+                        className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                      >
+                        Locations
+                      </Link>
+                      <Link
+                        to="/category"
+                        className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                      >
+                        Categories
+                      </Link>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -176,45 +184,6 @@ const Header: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="-mr-2 flex md:hidden">
-          <button
-            type="button"
-            className="relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-            aria-controls="mobile-menu"
-            aria-expanded="false"
-          >
-            <span className="sr-only">Open main menu</span>
-            <svg
-              className="block size-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-              />
-            </svg>
-            <svg
-              className="hidden size-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
         </div>
       </nav>
     </div>

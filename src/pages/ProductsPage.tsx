@@ -11,7 +11,7 @@ import AddProduct from "../components/AddProduct";
 import MessageModal from "../components/MessageModal";
 import ProductList from "../components/ProductList";
 import { Product } from "../types/Product";
-import CategoryManager from "../components/Categorymanager";
+import CategoryManager from "../components/Category/Categorymanager";
 
 const ProductsPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -131,8 +131,6 @@ const ProductsPage: React.FC = () => {
             onDeleteClick={handleDeleteClick}
           />
         </div>
-        {/* Composant pour gérer les catégories */}
-        <CategoryManager />
       </div>
 
       {/* Affichage du popup d'ajout */}
