@@ -14,6 +14,13 @@ const Home: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+  // Check if the user is logged in
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    setIsLoggedIn(!!token); // Set isLoggedIn based on the presence of the token
+  }, []);
 
   // Function to fetch categories from the API
   const fetchCategories = async () => {
@@ -44,8 +51,10 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     fetchCategories();
-    fetchProducts();
-  }, []);
+    if (isLoggedIn) {
+      fetchProducts();
+    }
+  }, [isLoggedIn]);
 
   return (
     <div className="bg-gray-50 w-full">
@@ -95,32 +104,40 @@ const Home: React.FC = () => {
         <h2 className="text-center text-base font-semibold text-indigo-600 mt-16">
           Nos produits
         </h2>
-        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProducts.map((product) => (
-            <div
-              key={product._id}
-              className="relative bg-white rounded-lg shadow-md overflow-hidden"
-            >
-              <img
-                src="https://images.pexels.com/photos/1103829/pexels-photo-1103829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                alt="Product"
-                className="h-48 w-full object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  {product.name}
-                </h3>
-                <p className="mt-2 text-sm text-gray-600">{product.description}</p>
-                <p className="mt-2 text-sm text-gray-800 font-bold">
-                  {product.rentalPrice} €
-                </p>
-                <p className="mt-2 text-sm text-gray-800">
-                  {product.available ? "Disponible" : "Indisponible"}
-                </p>
+
+        {/* Check if the user is not logged in */}
+        {!isLoggedIn ? (
+          <div className="mt-6 text-center text-lg text-red-600">
+            Pour voir l'ensemble des produits, veuillez vous connecter ou vous inscrire.
+          </div>
+        ) : (
+          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProducts.map((product) => (
+              <div
+                key={product._id}
+                className="relative bg-white rounded-lg shadow-md overflow-hidden"
+              >
+                <img
+                  src="https://images.pexels.com/photos/1103829/pexels-photo-1103829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                  alt="Product"
+                  className="h-48 w-full object-cover"
+                />
+                <div className="p-6">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {product.name}
+                  </h3>
+                  <p className="mt-2 text-sm text-gray-600">{product.description}</p>
+                  <p className="mt-2 text-sm text-gray-800 font-bold">
+                    {product.rentalPrice} €
+                  </p>
+                  <p className="mt-2 text-sm text-gray-800">
+                    {product.available ? "Disponible" : "Indisponible"}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
