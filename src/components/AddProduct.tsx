@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { getCategories } from "../api/categoriesApi"; // Assurez-vous d'importer la fonction correcte pour récupérer les catégories
 
 interface AddProductPopupProps {
   onAddProduct: (product: {
     name: string;
-    price: number;
+    rentalPrice: number;
     description: string;
-    quantity: number;
+    // quantity: number;
+    available: boolean;
+    category: string;
   }) => void;
   onCancel: () => void;
 }
@@ -15,19 +18,37 @@ const AddProductPopup: React.FC<AddProductPopupProps> = ({
   onCancel,
 }) => {
   const [name, setName] = useState("");
-  const [price, setPrice] = useState<number | "">("");
+  const [rentalPrice, setRentalPrice] = useState<number | "">("");
   const [description, setDescription] = useState("");
-  const [quantity, setQuantity] = useState<number | "">("");
+  // const [quantity, setQuantity] = useState<number | "">("");
+  const [available, setAvailable] = useState(true);
+  const [category, setCategory] = useState<string>("");
+  const [categories, setCategories] = useState<{ _id: string; name: string }[]>([]);
+
+  // Fonction pour récupérer les catégories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await getCategories();
+        setCategories(data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des catégories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (name && price && description && quantity) {
+    if (name && rentalPrice && description !== "" && category) {
       onAddProduct({
         name,
-        price: Number(price),
+        rentalPrice: Number(rentalPrice),
         description,
-        quantity: Number(quantity),
+        // quantity: Number(quantity),
+        available,
+        category,
       });
     }
   };
@@ -84,17 +105,17 @@ const AddProductPopup: React.FC<AddProductPopupProps> = ({
 
           <div>
             <label
-              htmlFor="price"
+              htmlFor="rentalPrice"
               className="block text-sm font-medium text-gray-900 dark:text-white"
             >
-              Prix
+              Prix de location
             </label>
             <input
               type="number"
-              id="price"
-              value={price}
+              id="rentalPrice"
+              value={rentalPrice}
               onChange={(e) =>
-                setPrice(e.target.value ? parseFloat(e.target.value) : "")
+                setRentalPrice(e.target.value ? parseFloat(e.target.value) : "")
               }
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white sm:text-sm"
               required
@@ -117,7 +138,7 @@ const AddProductPopup: React.FC<AddProductPopupProps> = ({
             />
           </div>
 
-          <div>
+          {/* <div>
             <label
               htmlFor="quantity"
               className="block text-sm font-medium text-gray-900 dark:text-white"
@@ -134,6 +155,49 @@ const AddProductPopup: React.FC<AddProductPopupProps> = ({
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white sm:text-sm"
               required
             />
+          </div> */}
+
+          <div>
+            <label
+              htmlFor="category"
+              className="block text-sm font-medium text-gray-900 dark:text-white"
+            >
+              Catégorie
+            </label>
+            <select
+              id="category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white sm:text-sm"
+              required
+            >
+              <option value="" disabled>
+                Sélectionnez une catégorie
+              </option>
+              {categories.map((cat) => (
+                <option key={cat._id} value={cat._id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="available"
+              className="block text-sm font-medium text-gray-900 dark:text-white"
+            >
+              Disponible
+            </label>
+            <select
+              id="available"
+              value={available ? "true" : "false"}
+              onChange={(e) => setAvailable(e.target.value === "true")}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white sm:text-sm"
+            >
+              <option value="true">Oui</option>
+              <option value="false">Non</option>
+            </select>
           </div>
 
           <div className="flex justify-end space-x-4">

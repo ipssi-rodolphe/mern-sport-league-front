@@ -1,7 +1,8 @@
 export interface Product {
   _id: string;
   name: string;
-  price: number;
+  rentalPrice: number;
+  available: boolean;
   description: string;
-  quantity: number;
+  category: string;
 }

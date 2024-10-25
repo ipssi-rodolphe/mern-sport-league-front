@@ -11,6 +11,7 @@ import AddProduct from "../components/AddProduct";
 import MessageModal from "../components/MessageModal";
 import ProductList from "../components/ProductList";
 import { Product } from "../types/Product";
+import CategoryManager from "../components/Categorymanager";
 
 const ProductsPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -83,9 +84,11 @@ const ProductsPage: React.FC = () => {
   // Fonction pour ajouter un produit
   const handleAddProduct = async (product: {
     name: string;
-    price: number;
+    rentalPrice: number;
     description: string;
-    quantity: number;
+    // quantity: number;
+    category: string;
+    available: boolean;
   }) => {
     try {
       await addProduct(product);
@@ -128,6 +131,8 @@ const ProductsPage: React.FC = () => {
             onDeleteClick={handleDeleteClick}
           />
         </div>
+        {/* Composant pour gérer les catégories */}
+        <CategoryManager />
       </div>
 
       {/* Affichage du popup d'ajout */}

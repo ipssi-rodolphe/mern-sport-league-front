@@ -1,10 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Product } from "../types/Product";
+import { getCategories } from "../api/categoriesApi";
 
 interface ProductUpdateProps {
   product: Product;
   onUpdate: (updatedProduct: Product) => void;
   onCancel: () => void;
+}
+
+interface Category {
+  _id: string;
+  name: string;
 }
 
 const ProductUpdate: React.FC<ProductUpdateProps> = ({
@@ -13,9 +19,30 @@ const ProductUpdate: React.FC<ProductUpdateProps> = ({
   onCancel,
 }) => {
   const [name, setName] = useState(product.name);
-  const [price, setPrice] = useState(product.price);
+  const [rentalPrice, setRentalPrice] = useState(product.rentalPrice);
   const [description, setDescription] = useState(product.description);
-  const [quantity, setQuantity] = useState(product.quantity);
+  const [available, setAvailable] = useState(product.available);
+  const [category, setCategory] = useState(product.category || ""); // Initialiser avec une chaîne vide par défaut
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  // Fonction pour charger les catégories
+  const fetchCategories = async () => {
+    try {
+      const data = await getCategories();
+      setCategories(data);
+
+      // Si la catégorie actuelle est null, définir la première catégorie disponible comme valeur par défaut
+      if (!product.category && data.length > 0) {
+        setCategory(data[0]._id);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération des catégories:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,10 +51,12 @@ const ProductUpdate: React.FC<ProductUpdateProps> = ({
     const updatedProduct: Product = {
       ...product,
       name,
-      price,
+      rentalPrice,
       description,
-      quantity,
+      available,
+      category,
     };
+    console.log("Produit mis à jour:", updatedProduct);
 
     // Appeler la fonction onUpdate avec les nouvelles données
     onUpdate(updatedProduct);
@@ -87,7 +116,7 @@ const ProductUpdate: React.FC<ProductUpdateProps> = ({
               </div>
               <div>
                 <label
-                  htmlFor="price"
+                  htmlFor="rentalPrice"
                   className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Prix
@@ -95,8 +124,8 @@ const ProductUpdate: React.FC<ProductUpdateProps> = ({
                 <input
                   type="number"
                   id="price"
-                  value={price}
-                  onChange={(e) => setPrice(parseFloat(e.target.value))}
+                  value={rentalPrice}
+                  onChange={(e) => setRentalPrice(parseFloat(e.target.value))}
                   className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                   required
                 />
@@ -116,21 +145,48 @@ const ProductUpdate: React.FC<ProductUpdateProps> = ({
                   required
                 />
               </div>
+
+              {/* Sélection de la catégorie */}
               <div>
                 <label
-                  htmlFor="quantity"
+                  htmlFor="category"
                   className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Quantité
+                  Catégorie
                 </label>
-                <input
-                  type="number"
-                  id="quantity"
-                  value={quantity}
-                  onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
+                <select
+                  id="category"
+                  value={category || ""} // Assurer une valeur par défaut
+                  onChange={(e) => setCategory(e.target.value)}
                   className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                   required
-                />
+                >
+                  {categories.map((cat) => (
+                    <option key={cat._id} value={cat._id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Sélection de la disponibilité */}
+              <div>
+                <label
+                  htmlFor="available"
+                  className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Disponible
+                </label>
+                <select
+                  id="available"
+                  value={available ? "true" : "false"}
+                  onChange={(e) => setAvailable(e.target.value === "true")}
+                  className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                  required
+                >
+                  <option value="true">Oui</option>
+                  <option value="false">Non</option>
+                </select>
               </div>
 
               <div className="flex justify-end space-x-4">
