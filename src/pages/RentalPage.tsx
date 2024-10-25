@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import RentalList from "../components/Rental/RentalList";
 import RentalDetails from "../components/Rental/RentalDetails";
+import RentalUpdate from "../components/Rental/RentalUpdate";
 import MessageModal from "../components/MessageModal";
 import ConfirmActionPopup from "../components/ConfirmActionPopup";
 import {
@@ -16,8 +17,10 @@ const RentalPage: React.FC = () => {
   const [isSuccess, setIsSuccess] = useState<boolean>(true);
   const [showConfirmPopup, setShowConfirmPopup] = useState(false);
   const [showDetailsPopup, setShowDetailsPopup] = useState(false);
+  const [showUpdatePopup, setShowUpdatePopup] = useState(false); // Contrôle de l'affichage de RentalUpdate
   const [rentalToDelete, setRentalToDelete] = useState<Rental | null>(null);
   const [rentalToShow, setRentalToShow] = useState<Rental | null>(null);
+  const [rentalToUpdate, setRentalToUpdate] = useState<Rental | null>(null); // Location sélectionnée pour mise à jour
 
   // Charger toutes les locations
   useEffect(() => {
@@ -45,6 +48,35 @@ const RentalPage: React.FC = () => {
     setShowDetailsPopup(true);
   };
 
+  // Ouvre le popup de mise à jour pour le statut de retour
+  const handleUpdateRental = (id: string, returned: boolean) => {
+    const rental = rentals.find((rental) => rental._id === id);
+    if (rental) {
+      setRentalToUpdate({ ...rental, returned });
+      setShowUpdatePopup(true);
+    }
+  };
+
+  // Confirme et met à jour le statut de retour de la location
+  const confirmUpdateRental = async (updatedRental: Rental) => {
+    try {
+      await updateRentalStatus(updatedRental._id, updatedRental.returned);
+      setRentals(
+        rentals.map((rental) =>
+          rental._id === updatedRental._id ? updatedRental : rental,
+        ),
+      );
+      setMessage("Statut de la location mis à jour avec succès.");
+      setIsSuccess(true);
+    } catch (error) {
+      setMessage("Erreur lors de la mise à jour du statut de la location.");
+      setIsSuccess(false);
+    } finally {
+      setShowUpdatePopup(false);
+      setRentalToUpdate(null);
+    }
+  };
+
   // Confirme et supprime la location
   const confirmDeleteRental = async () => {
     if (rentalToDelete) {
@@ -63,31 +95,14 @@ const RentalPage: React.FC = () => {
     }
   };
 
-  // Mise à jour du statut de retour de la location
-  const handleUpdateStatus = async (id: string, returned: boolean) => {
-    try {
-      await updateRentalStatus(id, returned);
-      setRentals(
-        rentals.map((rental) =>
-          rental._id === id ? { ...rental, returned } : rental,
-        ),
-      );
-      setMessage("Statut de la location mis à jour avec succès.");
-      setIsSuccess(true);
-    } catch (error) {
-      setMessage("Erreur lors de la mise à jour du statut de la location.");
-      setIsSuccess(false);
-    }
-  };
-
   return (
     <div>
       <h1 className="mb-6 text-2xl font-semibold">Gestion des Locations</h1>
       <RentalList
         rentals={rentals}
         onDeleteRental={handleDeleteRental}
-        onUpdateStatus={handleUpdateStatus}
-        onShowDetails={handleShowDetails} // Passer handleShowDetails à RentalList
+        onUpdateStatus={handleUpdateRental} // Utiliser handleUpdateRental pour le statut
+        onShowDetails={handleShowDetails}
       />
 
       {/* Modal de confirmation pour la suppression */}
@@ -107,6 +122,15 @@ const RentalPage: React.FC = () => {
         <RentalDetails
           rental={rentalToShow}
           onClose={() => setShowDetailsPopup(false)}
+        />
+      )}
+
+      {/* Modal de mise à jour pour le statut de retour */}
+      {showUpdatePopup && rentalToUpdate && (
+        <RentalUpdate
+          rental={rentalToUpdate}
+          onUpdate={confirmUpdateRental}
+          onCancel={() => setShowUpdatePopup(false)}
         />
       )}
 

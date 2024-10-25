@@ -5,7 +5,7 @@ interface RentalListProps {
   rentals: Rental[];
   onDeleteRental: (rental: Rental) => void;
   onUpdateStatus: (id: string, returned: boolean) => void;
-  onShowDetails: (rental: Rental) => void; // Ajout de l'événement pour le bouton Détails
+  onShowDetails: (rental: Rental) => void;
 }
 
 const RentalList: React.FC<RentalListProps> = ({
@@ -82,14 +82,12 @@ const RentalList: React.FC<RentalListProps> = ({
                       ? "bg-blue-500 hover:bg-blue-600"
                       : "bg-green-500 hover:bg-green-600"
                   }`}
-                  disabled={rental.returned}
                 >
-                  {rental.returned ? "Déjà Retourné" : "Marquer Retourné"}
+                  {rental.returned ? "Annuler Retour" : "Marquer Retourné"}
                 </button>
                 <button
                   onClick={() => onDeleteRental(rental)}
                   className="rounded-md bg-red-500 px-3 py-2 text-sm font-semibold text-white hover:bg-red-600"
-                  disabled={!rental.returned}
                 >
                   Supprimer
                 </button>
