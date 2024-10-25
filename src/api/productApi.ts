@@ -22,47 +22,33 @@ export const getCookie = (name: string): string | null => {
 
 
 // Fonction pour récupérer tous les produits
-export const getProducts = async () => {
-  // // Destructuration des paramètres
-  // const { 
-  //   page = 1,
-  //   title,
-  //   genre,
-  //   artiste,
-  //   sortField = 'name',
-  //   sortOrder = 'asc',
-  //   limit = 10
-  // } = params;
+export const getProducts = async (filters: { category?: string } = {}) => {
+  const authToken = getCookie('token');
 
-  // // Construire les paramètres de requête pour l'URL
-  // const queryParams = new URLSearchParams({
-  //   page: String(page),
-  //   sortField,
-  //   sortOrder,
-  //   limit: String(limit),
-  // });
+  if (!authToken) {
+    console.log('No valid token');
+    throw new Error("No valid token");
+  }
 
-  // // Ajouter les paramètres facultatifs s'ils sont présents
-  // if (title) queryParams.append('title', title);
-  // if (genre) queryParams.append('genre', genre);
-  // if (artiste) queryParams.append('artiste', artiste);
- // Récupérer le authToken depuis les cookies 
- const authToken = getCookie('token');
-
- if (!authToken) {
-     console.log('No valid token');
- }
   try {
-    // Construire l'URL avec les paramètres de requête
-    const url = `${API_URL}`;
+    // Construire les paramètres de requête en fonction des filtres fournis
+    const queryParams = new URLSearchParams();
+
+    if (filters.category) {
+      queryParams.append('category', filters.category);
+    }
+
+    // Construire l'URL complète avec les paramètres
+    const url = `${API_URL}?${queryParams.toString()}`;
+
     const response = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        'Authorization' : `Bearer ${authToken}`
+        "Authorization": `Bearer ${authToken}`
       }
     });
-    
+
     if (!response.ok) {
       throw new Error(`Erreur: ${response.status}`);
     }
@@ -73,6 +59,7 @@ export const getProducts = async () => {
     throw error;
   }
 };
+
 
 // Fonction pour ajouter un nouveau produit
 export const addProduct = async (product: {

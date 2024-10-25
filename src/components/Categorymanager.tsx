@@ -1,3 +1,4 @@
+// Modifications dans CategoryManager.tsx
 import React, { useState, useEffect } from "react";
 import {
   getCategories,
@@ -6,10 +7,13 @@ import {
   deleteCategory,
 } from "../api/categoriesApi";
 
+// Définir une interface pour les catégories
 interface Category {
-  _id: string;
+  _id?: string; // Le champ _id est optionnel lors de la création
   name: string;
   description: string;
+  createdAt?: string; // Champs créés automatiquement
+  updatedAt?: string;
 }
 
 const CategoryManager: React.FC = () => {
@@ -50,9 +54,12 @@ const CategoryManager: React.FC = () => {
   // Update category
   const handleUpdateCategory = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!editingCategory) return;
+    if (!editingCategory || !editingCategory._id) return; // Vérifier l'ID
+  
+    const { _id, createdAt, updatedAt, ...categoryWithoutUnwantedFields } = editingCategory;
+  
     try {
-      await updateCategory(editingCategory._id, editingCategory);
+      await updateCategory(_id, categoryWithoutUnwantedFields); // Utilisez l'ID séparé
       setEditingCategory(null);
       fetchCategories();
       setMessage("Catégorie mise à jour avec succès.");
@@ -61,6 +68,7 @@ const CategoryManager: React.FC = () => {
       setMessage("Erreur lors de la mise à jour de la catégorie.");
     }
   };
+  
 
   // Gérer la suppression de catégorie
   const handleDeleteCategory = async (id: string) => {
@@ -126,10 +134,7 @@ const CategoryManager: React.FC = () => {
       <h3 className="text-lg font-medium text-gray-700 mb-3">Liste des catégories</h3>
       <ul className="space-y-2">
         {categories.map((category) => (
-          <li
-            key={category._id}
-            className="border p-4 rounded-md flex justify-between items-center"
-          >
+          <li key={category._id} className="border p-4 rounded-md flex justify-between items-center">
             <div>
               <h4 className="font-medium text-gray-800">{category.name}</h4>
               <p className="text-gray-600">{category.description}</p>
@@ -142,7 +147,7 @@ const CategoryManager: React.FC = () => {
                 Modifier
               </button>
               <button
-                onClick={() => handleDeleteCategory(category._id)}
+                onClick={() => category._id && handleDeleteCategory(category._id)} // Vérifier que l'ID existe
                 className="bg-red-500 text-white py-1 px-3 rounded-md hover:bg-red-600"
               >
                 Supprimer
@@ -150,6 +155,7 @@ const CategoryManager: React.FC = () => {
             </div>
           </li>
         ))}
+
       </ul>
 
       {/* Formulaire de mise à jour de catégorie */}

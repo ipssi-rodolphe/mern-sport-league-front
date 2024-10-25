@@ -29,6 +29,9 @@ const Header: React.FC = () => {
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("user");
 
+    // Supprimer le cookie en réglant son expiration à une date passée
+    document.cookie = "token=; path=/; max-age=0; SameSite=Strict";
+
     // Réinitialiser l'utilisateur
     setUser(null);
 

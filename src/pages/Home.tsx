@@ -13,6 +13,8 @@ interface Category {
 const Home: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]); // État pour les produits filtrés
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   // Fonction pour récupérer les catégories à partir de l'API
   const fetchCategories = async () => {
@@ -25,13 +27,20 @@ const Home: React.FC = () => {
   };
 
   // Fonction pour récupérer les produits à partir de l'API
-  const fetchProducts = async () => {
+  const fetchProducts = async (categoryId?: string) => {
     try {
-      const data = await getProducts();
+      const data = await getProducts({ category: categoryId });
       setProducts(data);
+      setFilteredProducts(data); // Initialiser les produits filtrés avec tous les produits
     } catch (error) {
       console.error("Erreur lors de la récupération des produits", error);
     }
+  };
+
+  // Filtrer les produits par catégorie sélectionnée
+  const handleCategoryClick = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+    fetchProducts(categoryId); // Récupérer les produits filtrés par catégorie depuis l'API
   };
 
   useEffect(() => {
@@ -54,7 +63,10 @@ const Home: React.FC = () => {
           {categories.map((category) => (
             <div
               key={category._id}
-              className="relative cursor-pointer bg-white rounded-lg shadow hover:shadow-lg transition-shadow"
+              onClick={() => handleCategoryClick(category._id)}
+              className={`relative cursor-pointer bg-white rounded-lg shadow hover:shadow-lg transition-shadow ${
+                selectedCategory === category._id ? "border-2 border-indigo-600" : ""
+              }`}
             >
               <div className="absolute inset-0 rounded-lg"></div>
               <div className="relative flex flex-col h-full overflow-hidden rounded-lg p-6">
@@ -75,7 +87,7 @@ const Home: React.FC = () => {
         </h2>
         <div className="mt-6">
           <ProductList
-            products={products}
+            products={filteredProducts}
             onUpdateClick={() => {}}
             onDeleteClick={() => {}}
             showActions={false} // Désactive l'affichage des actions
