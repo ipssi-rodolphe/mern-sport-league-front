@@ -11,7 +11,6 @@ import AddProduct from "../components/AddProduct";
 import MessageModal from "../components/MessageModal";
 import ProductList from "../components/ProductList";
 import { Product } from "../types/Product";
-import CategoryManager from "../components/Category/Categorymanager";
 
 const ProductsPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
